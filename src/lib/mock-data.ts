@@ -83,7 +83,7 @@ export const initialProjects = [
     client: "Tech Solutions SA",
     status: "en-progreso",
     progress: 60,
-    dueDate: "2024-02-28",
+    dueDate: "2025-09-10",
   },
   {
     id: "PROJ-02",
@@ -91,7 +91,7 @@ export const initialProjects = [
     client: "Construcciones Del Norte",
     status: "completado",
     progress: 100,
-    dueDate: "2024-01-30",
+    dueDate: "2025-09-15",
   },
   {
     id: "PROJ-03",
@@ -99,7 +99,7 @@ export const initialProjects = [
     client: "InnovaTech",
     status: "en-progreso",
     progress: 30,
-    dueDate: "2024-03-15",
+    dueDate: "2025-09-20",
   },
   {
     id: "PROJ-04",
@@ -107,6 +107,6 @@ export const initialProjects = [
     client: "Servicios Integrales",
     status: "pendiente",
     progress: 0,
-    dueDate: "2024-02-10",
+    dueDate: "2025-09-25",
   },
 ];
