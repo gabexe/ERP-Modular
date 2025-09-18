@@ -10,8 +10,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { toast } from "sonner";
 
 export function TopHeader() {
+  const notificationCount = 0;
+
   return (
     <header className="h-16 bg-card border-b border-border flex items-center justify-between px-6 sticky top-0 z-10">
       {/* Left side - Sidebar trigger and search */}
@@ -32,14 +35,21 @@ export function TopHeader() {
       <div className="flex items-center space-x-4">
         {/* Notifications */}
         <div className="relative">
-          <Button variant="ghost" size="icon" className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative"
+            onClick={() => toast.info("Esta función está en desarrollo.")}
+          >
             <Bell className="w-5 h-5" />
-            <Badge 
-              variant="destructive" 
-              className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs p-0"
-            >
-              3
-            </Badge>
+            {notificationCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs p-0"
+              >
+                {notificationCount}
+              </Badge>
+            )}
           </Button>
         </div>
 
@@ -54,22 +64,22 @@ export function TopHeader() {
                 <User className="w-4 h-4 text-primary-foreground" />
               </div>
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium">Juan Pérez</p>
+                <p className="text-sm font-medium">Oscar Gencarelli</p>
                 <p className="text-xs text-muted-foreground">Administrador</p>
               </div>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast.info("Esta función está en desarrollo.")}>
               <User className="mr-2 h-4 w-4" />
               <span>Mi Perfil</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast.info("Esta función está en desarrollo.")}>
               <Bell className="mr-2 h-4 w-4" />
               <span>Notificaciones</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem className="text-red-600" onClick={() => toast.info("Esta función está en desarrollo.")}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Cerrar Sesión</span>
             </DropdownMenuItem>

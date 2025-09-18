@@ -87,6 +87,13 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   const collapsed = state === "collapsed";
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Buen día";
+    if (hour < 18) return "Buenas tardes";
+    return "Buenas noches";
+  };
+
   const isActive = (path: string) => {
     if (path === "/") {
       return currentPath === "/";
@@ -109,17 +116,11 @@ export function AppSidebar() {
         {/* Header */}
         <div className="flex items-center px-4 py-6 border-b border-sidebar-border">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-primary-foreground" />
-            </div>
             {!collapsed && (
               <div className="fade-in">
                 <h1 className="text-lg font-semibold text-sidebar-foreground">
-                  ERP Business
+                  {getGreeting()}, Oscar Gencarelli
                 </h1>
-                <p className="text-xs text-sidebar-foreground/70">
-                  Sistema de Gestión
-                </p>
               </div>
             )}
           </div>
