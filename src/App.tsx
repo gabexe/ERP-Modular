@@ -14,6 +14,7 @@ import Proyectos from "./pages/Proyectos";
 import Reportes from "./pages/Reportes";
 import Configuracion from "./pages/Configuracion";
 import CitaDetalles from "./pages/CitaDetalles";
+import UnderDevelopment from "./pages/UnderDevelopment";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,11 @@ const App = () => (
             <Route path="/proyectos" element={<Proyectos />} />
             <Route path="/reportes" element={<Reportes />} />
             <Route path="/configuracion" element={<Configuracion />} />
+            <Route path="/crm/nuevo" element={<UnderDevelopment />} />
+            <Route path="/facturacion/nueva" element={<UnderDevelopment />} />
+            <Route path="/agenda/nueva" element={<UnderDevelopment />} />
+            <Route path="/inventario/nuevo" element={<UnderDevelopment />} />
+            <Route path="/proyectos/nuevo" element={<UnderDevelopment />} />
           </Route>
           <Route path="/cita-detalles" element={<CitaDetalles />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

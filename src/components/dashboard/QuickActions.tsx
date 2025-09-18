@@ -9,6 +9,7 @@ import {
   BarChart3,
   ArrowRight 
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface QuickAction {
   title: string;
@@ -82,7 +83,7 @@ export function QuickActions() {
               }`}
               asChild
             >
-              <a href={action.href}>
+              <Link to={action.href}>
                 <div className="flex items-center space-x-3 w-full">
                   <div className={`flex-shrink-0 ${
                     action.variant === "primary" 
@@ -107,7 +108,7 @@ export function QuickActions() {
                       : "text-muted-foreground"
                   }`} />
                 </div>
-              </a>
+              </Link>
             </Button>
           ))}
         </div>
