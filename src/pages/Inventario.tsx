@@ -110,9 +110,9 @@ export default function Inventario() {
   };
 
   const getStockStatus = (stock: number, minStock: number) => {
-    if (stock <= minStock) return { status: "crítico", color: "bg-destructive text-destructive-foreground" };
-    if (stock <= minStock * 1.5) return { status: "bajo", color: "bg-warning text-warning-foreground" };
-    return { status: "normal", color: "bg-success text-success-foreground" };
+    if (stock <= minStock) return { status: "crítico", color: "bg-red-500/20 text-red-400 border-red-500/30" };
+    if (stock <= minStock * 1.5) return { status: "bajo", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" };
+    return { status: "normal", color: "bg-green-500/20 text-green-400 border-green-500/30" };
   };
 
   const getCategoryName = (category: string) => {
@@ -149,7 +149,7 @@ export default function Inventario() {
         </div>
         
         <div className="flex gap-3">
-          <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "Esta función estará disponible próximamente." })}>
+          <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}>
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
@@ -171,7 +171,7 @@ export default function Inventario() {
             className="pl-10"
           />
         </div>
-        <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "Esta función estará disponible próximamente." })}>
+        <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}>
           <Filter className="w-4 h-4 mr-2" />
           Filtros
         </Button>
