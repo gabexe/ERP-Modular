@@ -7,49 +7,16 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { ProjectModal } from "@/components/projects/ProjectModal";
 
-const initialProjects = [
-  {
-    id: "PROJ-01",
-    name: "Diseño de Nuevo Sitio Web",
-    client: "Tech Solutions SA",
-    status: "en-progreso",
-    progress: 60,
-    dueDate: "2024-02-28",
-  },
-  {
-    id: "PROJ-02",
-    name: "Construcción de Oficinas Centrales",
-    client: "Construcciones Del Norte",
-    status: "completado",
-    progress: 100,
-    dueDate: "2024-01-30",
-  },
-  {
-    id: "PROJ-03",
-    name: "Campaña de Marketing Digital",
-    client: "InnovaTech",
-    status: "en-progreso",
-    progress: 30,
-    dueDate: "2024-03-15",
-  },
-  {
-    id: "PROJ-04",
-    name: "Migración de Servidores a la Nube",
-    client: "Servicios Integrales",
-    status: "pendiente",
-    progress: 0,
-    dueDate: "2024-02-10",
-  },
-];
+import { initialProjects } from "@/lib/mock-data";
 
 const getStatusBadge = (status: string) => {
   switch (status) {
     case "en-progreso":
-      return <Badge className="status-info">En Progreso</Badge>;
+      return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">En Progreso</Badge>;
     case "completado":
-      return <Badge className="status-success">Completado</Badge>;
+      return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Completado</Badge>;
     case "pendiente":
-      return <Badge className="status-warning">Pendiente</Badge>;
+      return <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">Pendiente</Badge>;
     default:
       return <Badge variant="secondary">{status}</Badge>;
   }
@@ -82,7 +49,7 @@ const Proyectos = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "Esta función estará disponible próximamente." })}>
+          <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}>
             <Filter className="w-4 h-4 mr-2" />
             Filtros
           </Button>
