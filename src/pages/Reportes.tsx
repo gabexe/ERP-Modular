@@ -66,7 +66,7 @@ const Reportes = () => {
         </CardHeader>
         <CardContent>
           <div className="h-96 flex items-center justify-center text-muted-foreground">
-            <p>Gráficos y visualizaciones estarán disponibles próximamente.</p>
+            <p>En desarrollo.</p>
           </div>
         </CardContent>
       </Card>

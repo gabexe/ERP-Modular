@@ -50,7 +50,7 @@ const Configuracion = () => {
               </div>
               <Button 
                 variant="outline" 
-                onClick={() => toast({ title: "Función no disponible", description: "Esta función estará disponible próximamente." })}
+                onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}
               >
                 Editar Datos
               </Button>
@@ -106,7 +106,7 @@ const Configuracion = () => {
               <Button 
                 className="w-full" 
                 variant="outline" 
-                onClick={() => toast({ title: "Función no disponible", description: "Esta función estará disponible próximamente." })}
+                onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}
               >
                 Gestionar Integraciones
               </Button>

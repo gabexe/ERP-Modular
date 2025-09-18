@@ -143,7 +143,7 @@ export default function CRM() {
         </div>
         
         <div className="flex gap-3">
-          <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "Esta función estará disponible próximamente." })}>
+          <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}>
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
@@ -165,7 +165,7 @@ export default function CRM() {
             className="pl-10"
           />
         </div>
-        <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "Esta función estará disponible próximamente." })}>
+        <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}>
           <Filter className="w-4 h-4 mr-2" />
           Filtros
         </Button>
