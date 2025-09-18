@@ -27,9 +27,9 @@ interface ClientCardProps {
 export function ClientCard({ client, onEdit, onDelete }: ClientCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "activo": return "bg-success text-success-foreground";
-      case "inactivo": return "bg-muted text-muted-foreground";
-      case "prospecto": return "bg-warning text-warning-foreground";
+      case "activo": return "bg-green-500/20 text-green-400 border-green-500/30";
+      case "inactivo": return "bg-red-500/20 text-red-400 border-red-500/30";
+      case "prospecto": return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
       default: return "bg-muted text-muted-foreground";
     }
   };
