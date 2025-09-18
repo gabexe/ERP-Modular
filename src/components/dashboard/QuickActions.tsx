@@ -10,6 +10,7 @@ import {
   ArrowRight 
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface QuickAction {
   title: string;
@@ -65,6 +66,7 @@ const quickActions: QuickAction[] = [
 ];
 
 export function QuickActions() {
+  const { toast } = useToast();
   return (
     <Card className="card-gradient">
       <CardHeader>
@@ -81,9 +83,8 @@ export function QuickActions() {
                   ? "btn-primary" 
                   : "hover:bg-muted border-muted-foreground/20"
               }`}
-              asChild
+              onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}
             >
-              <Link to={action.href}>
                 <div className="flex items-center space-x-3 w-full">
                   <div className={`flex-shrink-0 ${
                     action.variant === "primary" 
@@ -108,7 +109,6 @@ export function QuickActions() {
                       : "text-muted-foreground"
                   }`} />
                 </div>
-              </Link>
             </Button>
           ))}
         </div>
