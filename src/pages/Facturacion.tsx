@@ -6,38 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { InvoiceModal } from "@/components/billing/InvoiceModal";
 
-const initialInvoices = [
-  {
-    id: "INV-001",
-    client: "Tech Solutions SA",
-    date: "2024-01-20",
-    total: 1500.00,
-    status: "pagada",
-  },
-  {
-    id: "INV-002",
-    client: "Construcciones Del Norte",
-    date: "2024-01-22",
-    total: 3200.50,
-    status: "pendiente",
-  },
-  {
-    id: "INV-003",
-    client: "InnovaTech",
-    date: "2024-01-25",
-    total: 850.75,
-    status: "vencida",
-  },
-];
+import { initialInvoices } from "@/lib/mock-data";
 
 const getStatusBadge = (status: string) => {
   switch (status) {
     case "pagada":
-      return <Badge className="status-success">Pagada</Badge>;
+      return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Pagada</Badge>;
     case "pendiente":
-      return <Badge className="status-warning">Pendiente</Badge>;
+      return <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">Pendiente</Badge>;
     case "vencida":
-      return <Badge className="status-error">Vencida</Badge>;
+      return <Badge className="bg-red-500/20 text-red-400 border-red-500/30">Vencida</Badge>;
     default:
       return <Badge variant="secondary">{status}</Badge>;
   }
@@ -70,7 +48,7 @@ const Facturacion = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "Esta función estará disponible próximamente." })}>
+          <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}>
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
