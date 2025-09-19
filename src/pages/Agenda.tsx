@@ -2,17 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { 
   Calendar, 
   Plus, 
   ChevronLeft, 
@@ -23,101 +12,33 @@ import {
   Edit
 } from "lucide-react";
 import { useState, useMemo } from "react";
-import { toast } from "sonner";
-
-import { initialAppointments } from "@/lib/mock-data";
+import { useModalStore } from "@/store/useModalStore";
+import { useAgendaStore } from "@/store/useAgendaStore";
 
 const Agenda = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [appointments, setAppointments] = useState(initialAppointments);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isReadOnly, setIsReadOnly] = useState(false);
-  const [editingAppointment, setEditingAppointment] = useState<any>(null);
-
-  // State for the new appointment form
-  const [title, setTitle] = useState("");
-  const [client, setClient] = useState("");
-  const [phone, setPhone] = useState("");
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [time, setTime] = useState("09:00");
+  const { appointments } = useAgendaStore();
+  const { openModal } = useModalStore();
 
   const filteredAppointments = useMemo(() => 
     appointments.filter(
       (appointment) => 
-        appointment.date.toDateString() === currentDate.toDateString()
-    ).sort((a, b) => a.date.getTime() - b.date.getTime()),
+        new Date(appointment.date).toDateString() === currentDate.toDateString()
+    ).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
     [appointments, currentDate]
   );
 
   const handleNewAppointment = () => {
-    setEditingAppointment(null);
-    setIsReadOnly(false);
-    setTitle("");
-    setClient("");
-    setPhone("");
-    setLocation("");
-    setDate(new Date().toISOString().split('T')[0]);
-    setTime("09:00");
-    setIsModalOpen(true);
+    openModal('appointment');
   };
 
   const handleEditAppointment = (appointment: any) => {
-    setEditingAppointment(appointment);
-    setIsReadOnly(false);
-    setTitle(appointment.title);
-    setClient(appointment.client);
-    setPhone(appointment.phone);
-    setLocation(appointment.location);
-    setDate(appointment.date.toISOString().split('T')[0]);
-    setTime(appointment.date.toTimeString().slice(0, 5));
-    setIsModalOpen(true);
+    openModal('appointment', { appointment });
   };
 
   const handleViewDetails = (appointment: any) => {
     localStorage.setItem("selectedAppointment", JSON.stringify(appointment));
     window.open("/cita-detalles", "_blank");
-  };
-
-  const handleSaveAppointment = () => {
-    if (!title || !client) {
-      // Basic validation
-      toast.error("El título y el cliente son obligatorios.");
-      return;
-    }
-
-    const [year, month, day] = date.split('-').map(Number);
-    const [hours, minutes] = time.split(':').map(Number);
-    const combinedDate = new Date(year, month - 1, day, hours, minutes);
-
-    if (editingAppointment) {
-      const updatedAppointment = {
-        ...editingAppointment,
-        title,
-        client,
-        phone,
-        location,
-        date: combinedDate,
-      };
-      setAppointments(prev => prev.map(app => app.id === editingAppointment.id ? updatedAppointment : app));
-      toast.success("Cita actualizada con éxito");
-    } else {
-      const newAppointment = {
-        id: appointments.length + 1,
-        title,
-        client,
-        date: combinedDate,
-        duration: "1h", // Default duration
-        type: "reunión", // Default type
-        status: "pendiente",
-        location,
-        phone,
-      };
-      setAppointments(prev => [...prev, newAppointment]);
-      toast.success("Cita creada con éxito");
-    }
-
-    setIsModalOpen(false);
   };
 
   const getStatusBadge = (status: string) => {
@@ -231,48 +152,6 @@ const Agenda = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* New/Edit Appointment Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>{isReadOnly ? "Detalles de la Cita" : editingAppointment ? "Editar Cita" : "Crear Nueva Cita"}</DialogTitle>
-            {!isReadOnly && <DialogDescription>Completa los detalles para {editingAppointment ? "actualizar la" : "agendar una nueva"} cita.</DialogDescription>}
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="title" className="text-right">Título</Label>
-              <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="col-span-3" placeholder="Ej: Reunión de seguimiento" readOnly={isReadOnly}/>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="client" className="text-right">Cliente</Label>
-              <Input id="client" value={client} onChange={(e) => setClient(e.target.value)} className="col-span-3" placeholder="Nombre del cliente" readOnly={isReadOnly}/>
-            </div>
-             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phone" className="text-right">Teléfono</Label>
-              <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="col-span-3" placeholder="+54 11..." readOnly={isReadOnly}/>
-            </div>
-             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="location" className="text-right">Ubicación</Label>
-              <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} className="col-span-3" placeholder="Dirección o 'Remoto'" readOnly={isReadOnly}/>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="date" className="text-right">Fecha</Label>
-              <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="col-span-3" readOnly={isReadOnly}/>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="time" className="text-right">Hora</Label>
-              <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} className="col-span-3" readOnly={isReadOnly}/>
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">{isReadOnly ? "Cerrar" : "Cancelar"}</Button>
-            </DialogClose>
-            {!isReadOnly && <Button type="submit" onClick={handleSaveAppointment}>Guardar Cita</Button>}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

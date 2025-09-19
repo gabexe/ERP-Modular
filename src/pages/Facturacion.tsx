@@ -1,12 +1,10 @@
-import { useState } from "react";
 import { Receipt, Plus, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { InvoiceModal } from "@/components/billing/InvoiceModal";
-
-import { initialInvoices } from "@/lib/mock-data";
+import { useModalStore } from "@/store/useModalStore";
+import { useBillingStore } from "@/store/useBillingStore";
 
 const getStatusBadge = (status: string) => {
   switch (status) {
@@ -23,16 +21,8 @@ const getStatusBadge = (status: string) => {
 
 const Facturacion = () => {
   const { toast } = useToast();
-  const [invoices, setInvoices] = useState(initialInvoices);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  const handleSaveInvoice = (invoiceData: any) => {
-    setInvoices(prev => [invoiceData, ...prev]);
-    toast({
-      title: "Factura Guardada",
-      description: `La factura ${invoiceData.id} ha sido creada exitosamente.`,
-    });
-  };
+  const { invoices } = useBillingStore();
+  const { openModal } = useModalStore();
 
   return (
     <div className="space-y-6 fade-in">
@@ -52,7 +42,7 @@ const Facturacion = () => {
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
-          <Button onClick={() => setIsModalOpen(true)}>
+          <Button onClick={() => openModal('invoice')}>
             <Plus className="w-4 h-4 mr-2" />
             Nueva Factura
           </Button>
@@ -86,13 +76,6 @@ const Facturacion = () => {
           </div>
         </CardContent>
       </Card>
-      
-      <InvoiceModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveInvoice}
-        invoice={null}
-      />
     </div>
   );
 };

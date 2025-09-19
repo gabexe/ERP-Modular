@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Save, Package, DollarSign, Hash, FileText, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,36 +6,54 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useModalStore } from "@/store/useModalStore";
+import { useInventoryStore } from "@/store/useInventoryStore";
 
-interface ProductModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  product?: any;
-  onSave: (productData: any) => void;
-}
+export function ProductModal() {
+  const { isOpen, type, data, closeModal } = useModalStore();
+  const { saveProduct } = useInventoryStore();
 
-export function ProductModal({ isOpen, onClose, product, onSave }: ProductModalProps) {
   const [formData, setFormData] = useState({
-    name: product?.name || "",
-    sku: product?.sku || "",
-    category: product?.category || "",
-    price: product?.price || "",
-    stock: product?.stock || "",
-    minStock: product?.minStock || "",
-    description: product?.description || "",
+    name: "",
+    sku: "",
+    category: "",
+    price: "",
+    stock: "",
+    minStock: "",
+    description: "",
   });
+
+  const isModalOpen = isOpen && type === 'product';
+  const product = data?.product;
+
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        name: product.name || "",
+        sku: product.sku || "",
+        category: product.category || "",
+        price: product.price || "",
+        stock: product.stock || "",
+        minStock: product.minStock || "",
+        description: product.description || "",
+      });
+    } else {
+      setFormData({
+        name: "",
+        sku: "",
+        category: "",
+        price: "",
+        stock: "",
+        minStock: "",
+        description: "",
+      });
+    }
+  }, [product]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
-      ...formData,
-      id: product?.id || Date.now(),
-      price: parseFloat(formData.price),
-      stock: parseInt(formData.stock),
-      minStock: parseInt(formData.minStock),
-      lastUpdate: new Date().toISOString().split('T')[0],
-    });
-    onClose();
+    saveProduct(formData, product?.id);
+    closeModal();
   };
 
   const handleChange = (field: string, value: string) => {
@@ -43,7 +61,7 @@ export function ProductModal({ isOpen, onClose, product, onSave }: ProductModalP
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -156,7 +174,7 @@ export function ProductModal({ isOpen, onClose, product, onSave }: ProductModalP
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+            <Button type="button" variant="outline" onClick={closeModal} className="flex-1">
               Cancelar
             </Button>
             <Button type="submit" className="flex-1">

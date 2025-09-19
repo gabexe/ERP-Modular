@@ -3,6 +3,10 @@ import { AppSidebar } from "./AppSidebar";
 import { TopHeader } from "./TopHeader";
 import { Outlet } from "react-router-dom";
 import { ClientModal } from "@/components/crm/ClientModal";
+import { ProductModal } from "@/components/inventory/ProductModal";
+import { InvoiceModal } from "@/components/billing/InvoiceModal";
+import { ProjectModal } from "@/components/projects/ProjectModal";
+import { AppointmentModal } from "@/components/agenda/AppointmentModal";
 
 export function MainLayout() {
   return (
@@ -21,6 +25,10 @@ export function MainLayout() {
         </main>
 
         <ClientModal />
+        <ProductModal />
+        <InvoiceModal />
+        <ProjectModal />
+        <AppointmentModal />
       </div>
     </SidebarProvider>
   );

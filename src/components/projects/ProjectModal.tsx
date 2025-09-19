@@ -3,11 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
+import { useModalStore } from "@/store/useModalStore";
+import { useProjectStore } from "@/store/useProjectStore";
 
-export function ProjectModal({ isOpen, onClose, onSave, project }: { isOpen: boolean; onClose: () => void; onSave: (data: any) => void; project: any }) {
+export function ProjectModal() {
+  const { isOpen, type, data, closeModal } = useModalStore();
+  const { saveProject } = useProjectStore();
+
   const [name, setName] = useState("");
   const [client, setClient] = useState("");
   const [dueDate, setDueDate] = useState("");
+
+  const isModalOpen = isOpen && type === 'project';
+  const project = data?.project;
 
   useEffect(() => {
     if (project) {
@@ -19,23 +27,15 @@ export function ProjectModal({ isOpen, onClose, onSave, project }: { isOpen: boo
       setClient("");
       setDueDate("");
     }
-  }, [project, isOpen]);
+  }, [project, isModalOpen]);
 
   const handleSave = () => {
-    const newProject = {
-      id: project ? project.id : `PROJ-${String(Date.now()).slice(-3)}`,
-      name,
-      client,
-      dueDate,
-      status: "pendiente",
-      progress: 0,
-    };
-    onSave(newProject);
-    onClose();
+    saveProject({ name, client, dueDate }, project?.id);
+    closeModal();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{project ? "Editar Proyecto" : "Crear Nuevo Proyecto"}</DialogTitle>
@@ -64,7 +64,7 @@ export function ProjectModal({ isOpen, onClose, onSave, project }: { isOpen: boo
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button variant="outline" onClick={closeModal}>Cancelar</Button>
           <Button onClick={handleSave}>Guardar Proyecto</Button>
         </DialogFooter>
       </DialogContent>

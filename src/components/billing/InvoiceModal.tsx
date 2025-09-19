@@ -4,11 +4,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useEffect } from "react";
+import { useModalStore } from "@/store/useModalStore";
+import { useBillingStore } from "@/store/useBillingStore";
 
-export function InvoiceModal({ isOpen, onClose, onSave, invoice }: { isOpen: boolean; onClose: () => void; onSave: (data: any) => void; invoice: any }) {
+export function InvoiceModal() {
+  const { isOpen, type, data, closeModal } = useModalStore();
+  const { saveInvoice } = useBillingStore();
+
   const [client, setClient] = useState("");
   const [total, setTotal] = useState("");
   const [status, setStatus] = useState("pendiente");
+
+  const isModalOpen = isOpen && type === 'invoice';
+  const invoice = data?.invoice;
 
   useEffect(() => {
     if (invoice) {
@@ -20,22 +28,15 @@ export function InvoiceModal({ isOpen, onClose, onSave, invoice }: { isOpen: boo
       setTotal("");
       setStatus("pendiente");
     }
-  }, [invoice, isOpen]);
+  }, [invoice, isModalOpen]);
 
   const handleSave = () => {
-    const newInvoice = {
-      id: invoice ? invoice.id : `INV-${String(Date.now()).slice(-3)}`,
-      client,
-      total: parseFloat(total),
-      date: new Date().toISOString().split('T')[0],
-      status,
-    };
-    onSave(newInvoice);
-    onClose();
+    saveInvoice({ client, total: parseFloat(total), status }, invoice?.id);
+    closeModal();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{invoice ? "Editar Factura" : "Crear Nueva Factura"}</DialogTitle>
@@ -73,7 +74,7 @@ export function InvoiceModal({ isOpen, onClose, onSave, invoice }: { isOpen: boo
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button variant="outline" onClick={closeModal}>Cancelar</Button>
           <Button onClick={handleSave}>Guardar Factura</Button>
         </DialogFooter>
       </DialogContent>

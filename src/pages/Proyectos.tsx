@@ -1,13 +1,11 @@
-import { useState } from "react";
 import { FolderOpen, Plus, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { ProjectModal } from "@/components/projects/ProjectModal";
-
-import { initialProjects } from "@/lib/mock-data";
+import { useModalStore } from "@/store/useModalStore";
+import { useProjectStore } from "@/store/useProjectStore";
 
 const getStatusBadge = (status: string) => {
   switch (status) {
@@ -24,16 +22,8 @@ const getStatusBadge = (status: string) => {
 
 const Proyectos = () => {
   const { toast } = useToast();
-  const [projects, setProjects] = useState(initialProjects);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleSaveProject = (projectData: any) => {
-    setProjects(prev => [projectData, ...prev]);
-    toast({
-      title: "Proyecto Guardado",
-      description: `El proyecto ${projectData.name} ha sido creado exitosamente.`,
-    });
-  };
+  const { projects } = useProjectStore();
+  const { openModal } = useModalStore();
 
   return (
     <div className="space-y-6 fade-in">
@@ -53,7 +43,7 @@ const Proyectos = () => {
             <Filter className="w-4 h-4 mr-2" />
             Filtros
           </Button>
-          <Button onClick={() => setIsModalOpen(true)}>
+          <Button onClick={() => openModal('project')}>
             <Plus className="w-4 h-4 mr-2" />
             Nuevo Proyecto
           </Button>
@@ -86,13 +76,6 @@ const Proyectos = () => {
           </Card>
         ))}
       </div>
-
-      <ProjectModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveProject}
-        project={null}
-      />
     </div>
   );
 };

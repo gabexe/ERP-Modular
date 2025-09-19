@@ -84,21 +84,24 @@ export function QuickActions() {
       description: "Generar nueva factura",
       icon: <FileText className="w-5 h-5" />,
       href: "/facturacion",
-      variant: "primary"
+      variant: "primary",
+      action: () => openModal('invoice')
     },
     {
       title: "Programar Cita",
       description: "Agendar nueva cita",
       icon: <Calendar className="w-5 h-5" />,
       href: "/agenda",
-      variant: "secondary"
+      variant: "secondary",
+      action: () => openModal('appointment')
     },
     {
       title: "Agregar Producto",
       description: "Añadir al inventario",
       icon: <Package className="w-5 h-5" />,
       href: "/inventario",
-      variant: "secondary"
+      variant: "secondary",
+      action: () => openModal('product')
     },
     {
       title: "Ver Reportes",
@@ -112,7 +115,8 @@ export function QuickActions() {
       description: "Crear proyecto",
       icon: <Plus className="w-5 h-5" />,
       href: "/proyectos",
-      variant: "secondary"
+      variant: "secondary",
+      action: () => openModal('project')
     }
   ];
 
