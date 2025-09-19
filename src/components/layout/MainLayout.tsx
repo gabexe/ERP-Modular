@@ -2,6 +2,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { TopHeader } from "./TopHeader";
 import { Outlet } from "react-router-dom";
+import { ClientModal } from "@/components/crm/ClientModal";
 
 export function MainLayout() {
   return (
@@ -18,6 +19,8 @@ export function MainLayout() {
             </div>
           </div>
         </main>
+
+        <ClientModal />
       </div>
     </SidebarProvider>
   );

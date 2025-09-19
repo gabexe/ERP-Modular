@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X, Save, User, Mail, Phone, MapPin, Building, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,33 +6,53 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useModalStore } from "@/store/useModalStore";
+import { useCrmStore } from "@/store/useCrmStore";
 
-interface ClientModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  client?: any;
-  onSave: (clientData: any) => void;
-}
-
-export function ClientModal({ isOpen, onClose, client, onSave }: ClientModalProps) {
+export function ClientModal() {
+  const { isOpen, type, data, closeModal } = useModalStore();
+  const { saveClient } = useCrmStore();
   const [formData, setFormData] = useState({
-    name: client?.name || "",
-    email: client?.email || "",
-    phone: client?.phone || "",
-    company: client?.company || "",
-    address: client?.address || "",
-    status: client?.status || "activo",
-    notes: client?.notes || "",
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    address: "",
+    status: "activo",
+    notes: "",
   });
+
+  const isModalOpen = isOpen && type === 'client';
+  const client = data?.client;
+
+  useEffect(() => {
+    if (client) {
+      setFormData({
+        name: client.name || "",
+        email: client.email || "",
+        phone: client.phone || "",
+        company: client.company || "",
+        address: client.address || "",
+        status: client.status || "activo",
+        notes: client.notes || "",
+      });
+    } else {
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        address: "",
+        status: "activo",
+        notes: "",
+      });
+    }
+  }, [client]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
-      ...formData,
-      id: client?.id || Date.now(),
-      lastContact: client?.lastContact || new Date().toISOString().split('T')[0],
-    });
-    onClose();
+    saveClient(formData, client?.id);
+    closeModal();
   };
 
   const handleChange = (field: string, value: string) => {
@@ -40,7 +60,7 @@ export function ClientModal({ isOpen, onClose, client, onSave }: ClientModalProp
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -145,7 +165,7 @@ export function ClientModal({ isOpen, onClose, client, onSave }: ClientModalProp
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+            <Button type="button" variant="outline" onClick={closeModal} className="flex-1">
               Cancelar
             </Button>
             <Button type="submit" className="flex-1">

@@ -9,8 +9,8 @@ import {
   BarChart3,
   ArrowRight 
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { useModalStore } from "@/store/useModalStore";
 
 interface QuickAction {
   title: string;
@@ -18,6 +18,7 @@ interface QuickAction {
   icon: React.ReactNode;
   href: string;
   variant: "primary" | "secondary";
+  action?: () => void;
 }
 
 const quickActions: QuickAction[] = [
@@ -66,7 +67,66 @@ const quickActions: QuickAction[] = [
 ];
 
 export function QuickActions() {
-  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { openModal } = useModalStore();
+
+  const quickActions: QuickAction[] = [
+    {
+      title: "Nuevo Cliente",
+      description: "Registrar cliente en CRM",
+      icon: <UserPlus className="w-5 h-5" />,
+      href: "/crm",
+      variant: "primary",
+      action: () => openModal('client')
+    },
+    {
+      title: "Crear Factura",
+      description: "Generar nueva factura",
+      icon: <FileText className="w-5 h-5" />,
+      href: "/facturacion",
+      variant: "primary"
+    },
+    {
+      title: "Programar Cita",
+      description: "Agendar nueva cita",
+      icon: <Calendar className="w-5 h-5" />,
+      href: "/agenda",
+      variant: "secondary"
+    },
+    {
+      title: "Agregar Producto",
+      description: "Añadir al inventario",
+      icon: <Package className="w-5 h-5" />,
+      href: "/inventario",
+      variant: "secondary"
+    },
+    {
+      title: "Ver Reportes",
+      description: "Análisis y estadísticas",
+      icon: <BarChart3 className="w-5 h-5" />,
+      href: "/reportes",
+      variant: "secondary"
+    },
+    {
+      title: "Nuevo Proyecto",
+      description: "Crear proyecto",
+      icon: <Plus className="w-5 h-5" />,
+      href: "/proyectos",
+      variant: "secondary"
+    }
+  ];
+
+  const handleActionClick = (action: QuickAction) => {
+    navigate(action.href);
+    if (action.action) {
+      // Use a timeout to ensure the navigation has completed
+      // and the destination component has mounted before opening the modal.
+      setTimeout(() => {
+        action.action!();
+      }, 50);
+    }
+  };
+
   return (
     <Card className="card-gradient">
       <CardHeader>
@@ -83,7 +143,7 @@ export function QuickActions() {
                   ? "btn-primary" 
                   : "hover:bg-muted border-muted-foreground/20"
               }`}
-              onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}
+              onClick={() => handleActionClick(action)}
             >
                 <div className="flex items-center space-x-3 w-full">
                   <div className={`flex-shrink-0 ${
