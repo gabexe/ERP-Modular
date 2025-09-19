@@ -1,5 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Users, Package, Receipt, Calendar } from "lucide-react";
+import { useCrmStore } from "@/store/useCrmStore";
+import { useInventoryStore } from "@/store/useInventoryStore";
+import { useBillingStore } from "@/store/useBillingStore";
+import { useAgendaStore } from "@/store/useAgendaStore";
 
 interface StatCardProps {
   title: string;
@@ -36,31 +40,59 @@ function StatCard({ title, value, change, trend, icon }: StatCardProps) {
 }
 
 export function StatsCards() {
-  const stats = [
+  const { clients } = useCrmStore();
+  const { products } = useInventoryStore();
+  const { invoices } = useBillingStore();
+  const { appointments } = useAgendaStore();
+
+  const activeClients = clients.filter(c => c.status === 'activo').length;
+  const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getYear();
+
+  const monthlyRevenue = invoices
+    .filter(inv => {
+      const invDate = new Date(inv.date);
+      return (
+        inv.status === 'pagada' &&
+        invDate.getMonth() === currentMonth &&
+        invDate.getYear() === currentYear
+      );
+    })
+    .reduce((sum, inv) => sum + inv.total, 0);
+
+  const todayAppointments = appointments.filter(app => {
+    const appDate = new Date(app.date);
+    return appDate.toDateString() === now.toDateString();
+  }).length;
+
+  const stats: StatCardProps[] = [
     {
       title: "Clientes Activos",
-      value: "2,431",
+      value: activeClients.toLocaleString(),
       change: "+12.5%",
       trend: "up" as const,
       icon: <Users className="w-4 h-4" />
     },
     {
       title: "Productos en Stock",
-      value: "1,245",
+      value: totalStock.toLocaleString(),
       change: "-2.1%",
       trend: "down" as const,
       icon: <Package className="w-4 h-4" />
     },
     {
       title: "Facturación Mensual",
-      value: "$45,231",
+      value: `${monthlyRevenue.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       change: "+18.7%",
       trend: "up" as const,
       icon: <Receipt className="w-4 h-4" />
     },
     {
-      title: "Citas Programadas",
-      value: "127",
+      title: "Citas para Hoy",
+      value: todayAppointments.toString(),
       change: "+7.3%",
       trend: "up" as const,
       icon: <Calendar className="w-4 h-4" />
