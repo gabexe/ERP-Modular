@@ -78,9 +78,16 @@ export const useBillingStore = create<BillingState>((set) => ({
           description: `La factura ${existingInvoiceId} ha sido actualizada.`,
         });
       } else {
+        const lastInvoice = set.getState().invoices[0];
+        let newInvoiceNumber = 1;
+        if (lastInvoice) {
+          const lastInvoiceNumber = parseInt(lastInvoice.id.split('-')[1], 10);
+          newInvoiceNumber = lastInvoiceNumber + 1;
+        }
+
         const newInvoice = {
           ...invoiceData,
-          id: `INV-${String(Date.now()).slice(-4)}`,
+          id: `INV-${String(newInvoiceNumber).padStart(4, '0')}`,
           date: now.split('T')[0],
           user_id: user?.id,
           created_at: now,

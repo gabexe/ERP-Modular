@@ -2,6 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { 
+  MoreVertical,
+  Trash2,
   Calendar, 
   Plus, 
   ChevronLeft, 
@@ -17,7 +25,7 @@ import { useAgendaStore } from "@/store/useAgendaStore";
 
 const Agenda = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const { appointments } = useAgendaStore();
+  const { appointments, deleteAppointment } = useAgendaStore();
   const { openModal } = useModalStore();
 
   const filteredAppointments = useMemo(() => 
@@ -34,6 +42,10 @@ const Agenda = () => {
 
   const handleEditAppointment = (appointment: any) => {
     openModal('appointment', { appointment });
+  };
+
+  const handleDeleteAppointment = (id: number) => {
+    deleteAppointment(id);
   };
 
   const handleViewDetails = (appointment: any) => {
@@ -136,8 +148,24 @@ const Agenda = () => {
                     <span className={`text-xs font-medium capitalize ${getTypeColor(appointment.type)}`}>{appointment.type}</span>
                     {getStatusBadge(appointment.status)}
                     <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" onClick={() => handleEditAppointment(appointment)}><Edit className="w-4 h-4" /></Button>
-                      <Button size="sm" className="btn-primary" onClick={() => handleViewDetails(appointment)}>Ver Detalles</Button>
+                      <Button size="sm" variant="outline" className="border border-primary bg-[#121212] text-foreground hover:bg-primary-light hover:text-foreground" onClick={() => handleViewDetails(appointment)}>Ver Detalles</Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="icon" variant="ghost">
+                            <MoreVertical className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem onClick={() => handleEditAppointment(appointment)}>
+                            <Edit className="w-4 h-4 mr-2" />
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDeleteAppointment(appointment.id)} className="text-red-500">
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Eliminar
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
                 </div>
