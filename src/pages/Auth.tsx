@@ -132,7 +132,14 @@ export default function Auth() {
       } else {
         payload.username = registerForm.identifier;
       }
-      await signUp(payload);
+      const { data, error } = await signUp(payload);
+      if (error) throw error;
+      
+      toast({
+        title: "¡Bienvenido/a!",
+        description: `Gracias por registrarte, ${registerForm.name}. Tu cuenta ha sido creada exitosamente.`,
+      });
+      
       navigate("/");
     } catch (error) {
       toast({

@@ -15,6 +15,7 @@ import Reportes from "./pages/Reportes";
 import Configuracion from "./pages/Configuracion";
 import CitaDetalles from "./pages/CitaDetalles";
 import UnderDevelopment from "./pages/UnderDevelopment";
+import Usuarios from "./pages/Usuarios";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const App = () => {
                   <Route path="/proyectos" element={<Proyectos />} />
                   <Route path="/reportes" element={<Reportes />} />
                   <Route path="/configuracion" element={<Configuracion />} />
+                  <Route path="/usuarios" element={<Usuarios />} />
                   <Route path="/crm/nuevo" element={<UnderDevelopment />} />
                   <Route path="/facturacion/nueva" element={<UnderDevelopment />} />
                   <Route path="/agenda/nueva" element={<UnderDevelopment />} />

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "@/lib/useAuth";
+import { useRoles } from "@/lib/useRoles";
 import {
   LayoutDashboard,
   Users,
@@ -11,7 +13,8 @@ import {
   Settings,
   ChevronLeft,
   Menu,
-  Building2
+  Building2,
+  UserCog
 } from "lucide-react";
 
 import {
@@ -74,6 +77,12 @@ const menuItems = [
 
 const settingsItems = [
   { 
+    title: "Usuarios", 
+    url: "/usuarios", 
+    icon: UserCog,
+    description: "Gestión de accesos"
+  },
+  { 
     title: "Configuración", 
     url: "/configuracion", 
     icon: Settings,
@@ -86,6 +95,8 @@ export function AppSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
   const collapsed = state === "collapsed";
+  const { user } = useAuth();
+  const { userRole } = useRoles();
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -117,10 +128,13 @@ export function AppSidebar() {
         <div className="flex items-center px-3 md:px-4 py-4 md:py-6 border-b border-sidebar-border">
           <div className="flex items-center space-x-3">
             {!collapsed && (
-              <div className="fade-in">
+              <div className="fade-in space-y-1 min-w-0">
                 <h1 className="text-base md:text-lg font-semibold text-sidebar-foreground truncate">
-                  {getGreeting()}, {typeof window !== 'undefined' && window.__USER_FULLNAME__ ? window.__USER_FULLNAME__ : 'Usuario'}
+                  {getGreeting()}, {user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuario'}
                 </h1>
+                <p className="text-sm text-sidebar-foreground/70 truncate">
+                  {userRole?.role === 'admin' ? 'Administrador' : userRole?.role === 'editor' ? 'Editor' : 'Visualizador'}
+                </p>
               </div>
             )}
           </div>

@@ -14,6 +14,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/useAuth";
 import { useProfile } from "@/lib/useProfile";
+import { useRoles } from "@/lib/useRoles";
 import { useNavigate } from "react-router-dom";
 
 export function TopHeader() {
@@ -23,12 +24,9 @@ export function TopHeader() {
   const navigate = useNavigate();
 
   // Determinar rol visual
-  let role = "Visualizador";
-  if (profile && user) {
-    // Si el usuario es dueño de algún proyecto, mostrar Administrador (esto se puede mejorar según lógica de proyectos)
-    // Por ahora, si el id de profile coincide con el id de user, es admin de su propio perfil
-    role = "Administrador";
-  }
+  const { userRole } = useRoles();
+  const role = userRole?.role === 'admin' ? 'Administrador' : userRole?.role === 'editor' ? 'Editor' : 'Visualizador';
+  const displayName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuario';
 
   const handleProfile = () => {
     navigate("/configuracion");
@@ -88,7 +86,7 @@ export function TopHeader() {
                 <User className="w-3 h-3 md:w-4 md:h-4 text-primary-foreground" />
               </div>
               <div className="hidden lg:block text-left">
-                <p className="text-xs md:text-sm font-medium">{profile?.full_name || "Usuario"}</p>
+                <p className="text-xs md:text-sm font-medium">{displayName}</p>
                 <p className="text-xs text-muted-foreground">{role}</p>
               </div>
             </Button>
