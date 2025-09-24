@@ -17,11 +17,12 @@ export function ProjectModal() {
   const isModalOpen = isOpen && type === 'project';
   const project = data?.project;
 
+
   useEffect(() => {
     if (project) {
-      setName(project.name);
-      setClient(project.client);
-      setDueDate(project.dueDate);
+      setName(project.name || "");
+      setClient(project.client || "");
+      setDueDate(project.due_date || "");
     } else {
       setName("");
       setClient("");
@@ -29,8 +30,8 @@ export function ProjectModal() {
     }
   }, [project, isModalOpen]);
 
-  const handleSave = () => {
-    saveProject({ name, client, dueDate }, project?.id);
+  const handleSave = async () => {
+    await saveProject({ name, client, due_date: dueDate }, project?.id);
     closeModal();
   };
 

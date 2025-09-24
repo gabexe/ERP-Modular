@@ -119,7 +119,7 @@ export function AppSidebar() {
             {!collapsed && (
               <div className="fade-in">
                 <h1 className="text-base md:text-lg font-semibold text-sidebar-foreground truncate">
-                  {getGreeting()}, Oscar Gencarelli
+                  {getGreeting()}, {typeof window !== 'undefined' && window.__USER_FULLNAME__ ? window.__USER_FULLNAME__ : 'Usuario'}
                 </h1>
               </div>
             )}

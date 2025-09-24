@@ -1,12 +1,35 @@
-import { Settings, Building, Bell, Zap } from "lucide-react";
+
+import { Settings, Building, Bell, Zap, User, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useProfile } from "@/lib/useProfile";
+import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { cleanDatabase } from "@/lib/cleanDatabase";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const Configuracion = () => {
   const { toast } = useToast();
+  const { profile, loading } = useProfile();
+  const [fullName, setFullName] = useState(profile?.full_name || "");
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    const { error } = await supabase.from('profiles').update({ full_name: fullName }).eq('id', profile.id);
+    setSaving(false);
+    if (error) {
+      toast({ title: 'Error', description: error.message });
+    } else {
+      toast({ title: 'Perfil actualizado', description: 'Tu nombre ha sido actualizado.' });
+    }
+  };
+
+  if (loading) return null;
 
   return (
     <div className="space-y-6 fade-in">
@@ -24,6 +47,32 @@ const Configuracion = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Column 1 */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Perfil de usuario */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="w-5 h-5" />
+                Mi Perfil
+              </CardTitle>
+              <CardDescription>
+                Edita tu información personal.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Nombre completo</Label>
+                <Input
+                  value={fullName}
+                  onChange={e => setFullName(e.target.value)}
+                  placeholder="Nombre completo"
+                  maxLength={40}
+                />
+              </div>
+              <Button onClick={handleSave} disabled={saving}>
+                {saving ? 'Guardando...' : 'Guardar Cambios'}
+              </Button>
+            </CardContent>
+          </Card>
           {/* Company Details */}
           <Card>
             <CardHeader>
@@ -110,6 +159,43 @@ const Configuracion = () => {
               >
                 Gestionar Integraciones
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Database Maintenance */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="w-5 h-5" />
+                Mantenimiento
+              </CardTitle>
+              <CardDescription>
+                Herramientas de mantenimiento de datos.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" className="w-full">
+                    Limpiar Base de Datos
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta acción eliminará todos tus registros de la base de datos, incluyendo productos, clientes, citas, facturas y proyectos.
+                      Esta acción no se puede deshacer.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={cleanDatabase}>
+                      Eliminar Todo
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardContent>
           </Card>
         </div>

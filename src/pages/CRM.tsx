@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Users, Plus, Search, Filter, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ClientCard } from "@/components/crm/ClientCard";
 import { useToast } from "@/hooks/use-toast";
 import { useModalStore } from "@/store/useModalStore";
 import { useCrmStore } from "@/store/useCrmStore";
+import { calculateCRMMetrics } from "@/lib/metrics";
 
 export default function CRM() {
   const [searchTerm, setSearchTerm] = useState("");
   const { openModal } = useModalStore();
-  const { clients, deleteClient } = useCrmStore();
+  const { clients, loading, error, fetchClients, deleteClient } = useCrmStore();
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchClients();
+  }, [fetchClients]);
 
   const handleNewClient = () => {
     openModal('client');
@@ -28,8 +34,7 @@ export default function CRM() {
     client.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const activeClients = clients.filter(c => c.status === "activo").length;
-  const prospects = clients.filter(c => c.status === "prospecto").length;
+  const metrics = useMemo(() => calculateCRMMetrics(clients), [clients]);
 
   return (
     <div className="space-y-4 md:space-y-6 fade-in">
@@ -84,8 +89,10 @@ export default function CRM() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            <div className="text-xl md:text-2xl font-bold text-foreground">{clients.length}</div>
-            <p className="text-xs text-success">+12% este mes</p>
+            <div className="text-xl md:text-2xl font-bold text-foreground">{metrics.totalClients}</div>
+            <p className={`text-xs ${metrics.monthGrowth >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.monthGrowth >= 0 ? '+' : ''}{metrics.monthGrowth}% este mes
+            </p>
           </CardContent>
         </Card>
         
@@ -96,8 +103,10 @@ export default function CRM() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            <div className="text-xl md:text-2xl font-bold text-foreground">{activeClients}</div>
-            <p className="text-xs text-warning">+5% este mes</p>
+            <div className="text-xl md:text-2xl font-bold text-foreground">{metrics.activeClients}</div>
+            <p className={`text-xs ${metrics.monthGrowth >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.monthGrowth >= 0 ? '+' : ''}{metrics.monthGrowth}% este mes
+            </p>
           </CardContent>
         </Card>
         
@@ -108,22 +117,45 @@ export default function CRM() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            <div className="text-xl md:text-2xl font-bold text-foreground">{prospects}</div>
-            <p className="text-xs text-info">+8% este mes</p>
+            <div className="text-xl md:text-2xl font-bold text-foreground">{metrics.prospects}</div>
+            <p className={`text-xs ${metrics.monthGrowth >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.monthGrowth >= 0 ? '+' : ''}{metrics.monthGrowth}% este mes
+            </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Clients Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-        {filteredClients.map((client) => (
-          <ClientCard
-            key={client.id}
-            client={client}
-            onEdit={handleEditClient}
-            onDelete={deleteClient}
-          />
-        ))}
+        {loading ? (
+          [...Array(6)].map((_, i) => (
+            <Card key={i}>
+              <CardContent className="p-6">
+                <Skeleton className="h-6 w-1/2 mb-4" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-2/3" />
+              </CardContent>
+            </Card>
+          ))
+        ) : error ? (
+          <div className="col-span-full text-center py-12 text-red-500">
+            Error al cargar los clientes: {error}
+          </div>
+        ) : filteredClients.length === 0 ? (
+          <div className="col-span-full text-center py-12 text-muted-foreground">
+            No se encontraron clientes
+          </div>
+        ) : (
+          filteredClients.map((client) => (
+            <ClientCard
+              key={client.id}
+              client={client}
+              onEdit={handleEditClient}
+              onDelete={deleteClient}
+            />
+          ))
+        )}
       </div>
 
     </div>

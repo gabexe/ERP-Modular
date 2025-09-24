@@ -1,11 +1,12 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, ArrowRight, Clock, CheckCircle, AlertTriangle, Receipt, FolderOpen, Calendar } from "lucide-react";
-import { initialAppointments } from "@/lib/mock-data";
-import { initialInvoices } from "@/lib/mock-data";
-import { initialProjects } from "@/lib/mock-data";
+import { useProjectStore } from "@/store/useProjectStore";
+import { useBillingStore } from "@/store/useBillingStore";
+import { useAgendaStore } from "@/store/useAgendaStore";
+import { Link } from "react-router-dom";
 
 // --- Helper Functions ---
 
@@ -68,32 +69,45 @@ const typeConfig: { [key: string]: { icon: JSX.Element; color: string; } } = {
 // --- Component ---
 
 export function RecentActivities() {
+  const projectStore = useProjectStore();
+  const billingStore = useBillingStore();
+  const agendaStore = useAgendaStore();
+
+  useEffect(() => {
+    projectStore.fetchProjects();
+    billingStore.fetchInvoices();
+    agendaStore.fetchAppointments();
+  }, []);
+
   const recentActivities = useMemo(() => {
-    const projects = initialProjects.map(p => ({
+    const projects = projectStore.projects.map(p => ({
       id: p.id,
       type: 'proyecto' as const,
       title: `Proyecto ${p.status}`,
       description: p.name,
-      date: new Date(p.dueDate),
+      date: new Date(p.due_date),
       status: p.status,
+      link: `/proyectos/${p.id}`
     }));
 
-    const invoices = initialInvoices.map(i => ({
+    const invoices = billingStore.invoices.map(i => ({
       id: i.id,
       type: 'factura' as const,
       title: `Factura ${i.status}`,
       description: `Factura ${i.id} para ${i.client}`,
       date: new Date(i.date),
       status: i.status,
+      link: `/facturacion/${i.id}`
     }));
 
-    const appointments = initialAppointments.map(a => ({
+    const appointments = agendaStore.appointments.map(a => ({
       id: a.id.toString(),
       type: 'cita' as const,
       title: `Cita ${a.status}`,
       description: a.title,
-      date: a.date, // Already a Date object
+      date: new Date(a.date),
       status: a.status,
+      link: `/agenda/${a.id}`
     }));
 
     const allActivities = [...projects, ...invoices, ...appointments];
@@ -108,10 +122,12 @@ export function RecentActivities() {
     <Card className="col-span-1 lg:col-span-2 card-gradient">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-base md:text-lg font-semibold">Actividades Recientes</CardTitle>
-        <Button variant="ghost" size="sm" className="text-primary hover:text-primary-hover hidden md:flex">
-          Ver todas
-          <ArrowRight className="w-4 h-4 ml-2" />
-        </Button>
+        <Link to="/actividades">
+          <Button variant="ghost" size="sm" className="text-primary hover:text-primary-hover hidden md:flex">
+            Ver todas
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </Link>
       </CardHeader>
       <CardContent>
         <div className="space-y-3 md:space-y-4">
@@ -141,9 +157,11 @@ export function RecentActivities() {
                   </div>
                 </div>
                 
-                <Button variant="ghost" size="sm" className="flex-shrink-0 hidden sm:flex">
-                  <Eye className="w-4 h-4" />
-                </Button>
+                <Link to={activity.link}>
+                  <Button variant="ghost" size="sm" className="flex-shrink-0 hidden sm:flex">
+                    <Eye className="w-4 h-4" />
+                  </Button>
+                </Link>
               </div>
             )
           })}

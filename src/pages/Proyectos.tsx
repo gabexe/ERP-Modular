@@ -1,9 +1,9 @@
+import { useEffect } from "react";
 import { FolderOpen, Plus, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { useToast } from "@/hooks/use-toast";
 import { useModalStore } from "@/store/useModalStore";
 import { useProjectStore } from "@/store/useProjectStore";
 
@@ -21,9 +21,12 @@ const getStatusBadge = (status: string) => {
 };
 
 const Proyectos = () => {
-  const { toast } = useToast();
-  const { projects } = useProjectStore();
+  const { projects, fetchProjects } = useProjectStore();
   const { openModal } = useModalStore();
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   return (
     <div className="space-y-6 fade-in">
@@ -39,7 +42,7 @@ const Proyectos = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" onClick={() => toast({ title: "Función no disponible", description: "En desarrollo." })}>
+          <Button variant="outline" onClick={() => {}}>
             <Filter className="w-4 h-4 mr-2" />
             Filtros
           </Button>
@@ -65,11 +68,11 @@ const Proyectos = () => {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Progreso</span>
-                  <span>{project.progress}%</span>
+                  <span>{project.progress ?? 0}%</span>
                 </div>
-                <Progress value={project.progress} className="h-2" />
+                <Progress value={project.progress ?? 0} className="h-2" />
                 <div className="text-xs text-muted-foreground pt-2">
-                  Fecha de Entrega: {project.dueDate}
+                  Fecha de Entrega: {project.due_date}
                 </div>
               </div>
             </CardContent>

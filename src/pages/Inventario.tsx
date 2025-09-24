@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Package, Plus, Search, Filter, Download, AlertTriangle, TrendingUp, Boxes, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useModalStore } from "@/store/useModalStore";
 import { useInventoryStore } from "@/store/useInventoryStore";
+import { calculateInventoryMetrics } from "@/lib/metrics";
 
 export default function Inventario() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,8 +46,7 @@ export default function Inventario() {
     product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const lowStockProducts = products.filter(p => p.stock <= p.minStock).length;
-  const totalValue = products.reduce((sum, p) => sum + (p.stock * p.price), 0);
+  const metrics = useMemo(() => calculateInventoryMetrics(products), [products]);
 
   return (
     <div className="space-y-6 fade-in">
@@ -101,8 +101,8 @@ export default function Inventario() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{products.length}</div>
-            <p className="text-xs text-success">+3 este mes</p>
+            <div className="text-2xl font-bold text-foreground">{metrics.totalProducts}</div>
+            <p className="text-xs text-muted-foreground">Total en sistema</p>
           </CardContent>
         </Card>
         
@@ -114,8 +114,10 @@ export default function Inventario() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">{lowStockProducts}</div>
-            <p className="text-xs text-muted-foreground">Requieren atención</p>
+            <div className="text-2xl font-bold text-destructive">{metrics.lowStockProducts}</div>
+            <p className="text-xs text-muted-foreground">
+              {metrics.criticalStock} críticos
+            </p>
           </CardContent>
         </Card>
         
@@ -127,8 +129,8 @@ export default function Inventario() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">${totalValue.toLocaleString()}</div>
-            <p className="text-xs text-info">Inventario actual</p>
+            <div className="text-2xl font-bold text-foreground">${metrics.totalValue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Valor actual</p>
           </CardContent>
         </Card>
         
@@ -139,8 +141,8 @@ export default function Inventario() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">127</div>
-            <p className="text-xs text-warning">Este mes</p>
+            <div className="text-2xl font-bold text-foreground">N/D</div>
+            <p className="text-xs text-muted-foreground">En desarrollo</p>
           </CardContent>
         </Card>
       </div>

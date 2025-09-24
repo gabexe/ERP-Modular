@@ -18,35 +18,50 @@ import UnderDevelopment from "./pages/UnderDevelopment";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/crm" element={<CRM />} />
-            <Route path="/inventario" element={<Inventario />} />
-            <Route path="/agenda" element={<Agenda />} />
-            <Route path="/facturacion" element={<Facturacion />} />
-            <Route path="/proyectos" element={<Proyectos />} />
-            <Route path="/reportes" element={<Reportes />} />
-            <Route path="/configuracion" element={<Configuracion />} />
-            <Route path="/crm/nuevo" element={<UnderDevelopment />} />
-            <Route path="/facturacion/nueva" element={<UnderDevelopment />} />
-            <Route path="/agenda/nueva" element={<UnderDevelopment />} />
-            <Route path="/inventario/nuevo" element={<UnderDevelopment />} />
-            <Route path="/proyectos/nuevo" element={<UnderDevelopment />} />
-          </Route>
-          <Route path="/cita-detalles" element={<CitaDetalles />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+import { useAuth } from "@/lib/useAuth";
+
+import Auth from "./pages/Auth";
+
+const App = () => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {!user ? (
+              <>
+                <Route path="*" element={<Auth />} />
+              </>
+            ) : (
+              <>
+                <Route element={<MainLayout />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/crm" element={<CRM />} />
+                  <Route path="/inventario" element={<Inventario />} />
+                  <Route path="/agenda" element={<Agenda />} />
+                  <Route path="/facturacion" element={<Facturacion />} />
+                  <Route path="/proyectos" element={<Proyectos />} />
+                  <Route path="/reportes" element={<Reportes />} />
+                  <Route path="/configuracion" element={<Configuracion />} />
+                  <Route path="/crm/nuevo" element={<UnderDevelopment />} />
+                  <Route path="/facturacion/nueva" element={<UnderDevelopment />} />
+                  <Route path="/agenda/nueva" element={<UnderDevelopment />} />
+                  <Route path="/inventario/nuevo" element={<UnderDevelopment />} />
+                  <Route path="/proyectos/nuevo" element={<UnderDevelopment />} />
+                </Route>
+                <Route path="/cita-detalles" element={<CitaDetalles />} />
+                <Route path="*" element={<NotFound />} />
+              </>
+            )}
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

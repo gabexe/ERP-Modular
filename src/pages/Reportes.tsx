@@ -1,7 +1,20 @@
 import { BarChart3, TrendingUp, Users, DollarSign } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCrmStore } from "@/store/useCrmStore";
+import { useBillingStore } from "@/store/useBillingStore";
+import { useEffect, useMemo } from "react";
+import { calculateReportMetrics } from "@/lib/metrics";
 
 const Reportes = () => {
+  const { clients, fetchClients } = useCrmStore();
+  const { invoices, fetchInvoices } = useBillingStore();
+
+  useEffect(() => {
+    fetchClients();
+    fetchInvoices();
+  }, [fetchClients, fetchInvoices]);
+
+  const metrics = useMemo(() => calculateReportMetrics(invoices, clients), [invoices, clients]);
   return (
     <div className="space-y-6 fade-in">
       {/* Header */}
@@ -23,8 +36,10 @@ const Reportes = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-muted-foreground">+20.1% desde el mes pasado</p>
+            <div className="text-2xl font-bold">${metrics.revenue.total.toLocaleString()}</div>
+            <p className={`text-xs ${metrics.revenue.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.revenue.change >= 0 ? '+' : ''}{metrics.revenue.change}% desde el mes pasado
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -33,8 +48,10 @@ const Reportes = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+23</div>
-            <p className="text-xs text-muted-foreground">+10.5% desde el mes pasado</p>
+            <div className="text-2xl font-bold">+{metrics.newClients.total}</div>
+            <p className={`text-xs ${metrics.newClients.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.newClients.change >= 0 ? '+' : ''}{metrics.newClients.change}% desde el mes pasado
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -43,8 +60,10 @@ const Reportes = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+12,234</div>
-            <p className="text-xs text-muted-foreground">+19% desde el mes pasado</p>
+            <div className="text-2xl font-bold">+{metrics.sales.total}</div>
+            <p className={`text-xs ${metrics.sales.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.sales.change >= 0 ? '+' : ''}{metrics.sales.change}% desde el mes pasado
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -53,8 +72,10 @@ const Reportes = () => {
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">15.2%</div>
-            <p className="text-xs text-muted-foreground">+2.1% desde el mes pasado</p>
+            <div className="text-2xl font-bold">{metrics.conversionRate.rate}%</div>
+            <p className={`text-xs ${metrics.conversionRate.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.conversionRate.change >= 0 ? '+' : ''}{metrics.conversionRate.change}% desde el mes pasado
+            </p>
           </CardContent>
         </Card>
       </div>

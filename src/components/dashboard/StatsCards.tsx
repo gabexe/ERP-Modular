@@ -4,6 +4,8 @@ import { useCrmStore } from "@/store/useCrmStore";
 import { useInventoryStore } from "@/store/useInventoryStore";
 import { useBillingStore } from "@/store/useBillingStore";
 import { useAgendaStore } from "@/store/useAgendaStore";
+import { getMonthDateRange, getPreviousMonthDateRange, calculatePercentageChange } from "@/lib/statsUtils";
+import { useEffect } from "react";
 
 interface StatCardProps {
   title: string;
@@ -11,11 +13,33 @@ interface StatCardProps {
   change: string;
   trend: "up" | "down";
   icon: React.ReactNode;
+  isLoading?: boolean;
 }
 
-function StatCard({ title, value, change, trend, icon }: StatCardProps) {
+function StatCard({ title, value, change, trend, icon, isLoading }: StatCardProps) {
   const TrendIcon = trend === "up" ? TrendingUp : TrendingDown;
   const trendColor = trend === "up" ? "text-success" : "text-error";
+
+  if (isLoading) {
+    return (
+      <Card className="card-gradient">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">
+            {title}
+          </CardTitle>
+          <div className="text-muted-foreground">
+            {icon}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="h-8 w-24 animate-pulse bg-muted rounded"></div>
+          <div className="flex items-center text-xs mt-1">
+            <div className="h-3 w-16 animate-pulse bg-muted rounded"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="card-gradient">
@@ -40,61 +64,99 @@ function StatCard({ title, value, change, trend, icon }: StatCardProps) {
 }
 
 export function StatsCards() {
-  const { clients } = useCrmStore();
-  const { products } = useInventoryStore();
-  const { invoices } = useBillingStore();
-  const { appointments } = useAgendaStore();
+  const { clients, fetchClients } = useCrmStore();
+  const { products, fetchProducts } = useInventoryStore();
+  const { invoices, fetchInvoices } = useBillingStore();
+  const { appointments, fetchAppointments } = useAgendaStore();
 
-  const activeClients = clients.filter(c => c.status === 'activo').length;
-  const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
+  useEffect(() => {
+    fetchClients();
+    fetchProducts();
+    fetchInvoices();
+    fetchAppointments();
+  }, [fetchClients, fetchProducts, fetchInvoices, fetchAppointments]);
 
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getYear();
+  // Clientes activos
+  const currentActiveClients = clients.filter(c => c.status === 'activo').length;
+  const previousActiveClients = clients.filter(c => {
+    const createdAt = new Date(c.created_at);
+    const { firstDay, lastDay } = getPreviousMonthDateRange();
+    return c.status === 'activo' && createdAt >= firstDay && createdAt <= lastDay;
+  }).length;
+  const clientsChange = calculatePercentageChange(currentActiveClients, previousActiveClients);
 
-  const monthlyRevenue = invoices
+  // Stock total
+  const currentStock = products.reduce((sum, p) => sum + p.stock, 0);
+  const previousStock = products.reduce((sum, p) => {
+    const updatedAt = new Date(p.updated_at);
+    const { firstDay, lastDay } = getPreviousMonthDateRange();
+    return sum + (updatedAt >= firstDay && updatedAt <= lastDay ? p.stock : 0);
+  }, 0);
+  const stockChange = calculatePercentageChange(currentStock, previousStock);
+
+  // Facturación mensual
+  const { firstDay: currentMonthStart, lastDay: currentMonthEnd } = getMonthDateRange();
+  const { firstDay: prevMonthStart, lastDay: prevMonthEnd } = getPreviousMonthDateRange();
+
+  const currentMonthRevenue = invoices
     .filter(inv => {
       const invDate = new Date(inv.date);
-      return (
-        inv.status === 'pagada' &&
-        invDate.getMonth() === currentMonth &&
-        invDate.getYear() === currentYear
-      );
+      return inv.status === 'pagada' && invDate >= currentMonthStart && invDate <= currentMonthEnd;
     })
     .reduce((sum, inv) => sum + inv.total, 0);
 
+  const previousMonthRevenue = invoices
+    .filter(inv => {
+      const invDate = new Date(inv.date);
+      return inv.status === 'pagada' && invDate >= prevMonthStart && invDate <= prevMonthEnd;
+    })
+    .reduce((sum, inv) => sum + inv.total, 0);
+
+  const revenueChange = calculatePercentageChange(currentMonthRevenue, previousMonthRevenue);
+
+  // Citas del día
+  const today = new Date();
   const todayAppointments = appointments.filter(app => {
     const appDate = new Date(app.date);
-    return appDate.toDateString() === now.toDateString();
+    return appDate.toDateString() === today.toDateString();
   }).length;
+
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayAppointments = appointments.filter(app => {
+    const appDate = new Date(app.date);
+    return appDate.toDateString() === yesterday.toDateString();
+  }).length;
+
+  const appointmentsChange = calculatePercentageChange(todayAppointments, yesterdayAppointments);
 
   const stats: StatCardProps[] = [
     {
       title: "Clientes Activos",
-      value: activeClients.toLocaleString(),
-      change: "+12.5%",
-      trend: "up" as const,
+      value: currentActiveClients.toLocaleString(),
+      change: `${clientsChange.value}%`,
+      trend: clientsChange.trend,
       icon: <Users className="w-4 h-4" />
     },
     {
       title: "Productos en Stock",
-      value: totalStock.toLocaleString(),
-      change: "-2.1%",
-      trend: "down" as const,
+      value: currentStock.toLocaleString(),
+      change: `${stockChange.value}%`,
+      trend: stockChange.trend,
       icon: <Package className="w-4 h-4" />
     },
     {
       title: "Facturación Mensual",
-      value: `${monthlyRevenue.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      change: "+18.7%",
-      trend: "up" as const,
+      value: `$${currentMonthRevenue.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      change: `${revenueChange.value}%`,
+      trend: revenueChange.trend,
       icon: <Receipt className="w-4 h-4" />
     },
     {
       title: "Citas para Hoy",
       value: todayAppointments.toString(),
-      change: "+7.3%",
-      trend: "up" as const,
+      change: `${appointmentsChange.value}%`,
+      trend: appointmentsChange.trend,
       icon: <Calendar className="w-4 h-4" />
     }
   ];
