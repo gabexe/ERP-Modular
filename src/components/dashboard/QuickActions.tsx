@@ -134,22 +134,22 @@ export function QuickActions() {
   return (
     <Card className="card-gradient">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Acciones Rápidas</CardTitle>
+        <CardTitle className="text-base md:text-lg font-semibold">Acciones Rápidas</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 gap-2 md:gap-3">
           {quickActions.map((action, index) => (
             <Button
               key={index}
               variant={action.variant === "primary" ? "default" : "outline"}
-              className={`h-auto p-4 justify-start text-left transition-all duration-200 hover:scale-105 ${
+              className={`h-auto p-3 md:p-4 justify-start text-left transition-all duration-200 hover:scale-105 ${
                 action.variant === "primary" 
                   ? "btn-primary" 
                   : "hover:bg-muted border-muted-foreground/20"
               }`}
               onClick={() => handleActionClick(action)}
             >
-                <div className="flex items-center space-x-3 w-full">
+                <div className="flex items-center space-x-2 md:space-x-3 w-full">
                   <div className={`flex-shrink-0 ${
                     action.variant === "primary" 
                       ? "text-primary-foreground" 
@@ -158,8 +158,8 @@ export function QuickActions() {
                     {action.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm">{action.title}</div>
-                    <div className={`text-xs ${
+                    <div className="font-medium text-sm md:text-base">{action.title}</div>
+                    <div className={`text-xs md:text-sm ${
                       action.variant === "primary" 
                         ? "text-primary-foreground/80" 
                         : "text-muted-foreground"
@@ -167,7 +167,7 @@ export function QuickActions() {
                       {action.description}
                     </div>
                   </div>
-                  <ArrowRight className={`w-4 h-4 flex-shrink-0 ${
+                  <ArrowRight className={`w-3 h-3 md:w-4 md:h-4 flex-shrink-0 ${
                     action.variant === "primary" 
                       ? "text-primary-foreground/80" 
                       : "text-muted-foreground"

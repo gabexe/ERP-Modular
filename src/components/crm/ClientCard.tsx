@@ -40,21 +40,21 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps) {
 
   return (
     <Card className="group hover:shadow-elegant transition-all duration-200 hover:border-primary/20">
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2 md:pb-3 px-4 md:px-6">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <Avatar className="w-12 h-12">
+          <div className="flex items-center gap-2 md:gap-3">
+            <Avatar className="w-10 h-10 md:w-12 md:h-12">
               <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                 {getInitials(client.name)}
               </AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="font-semibold text-card-foreground">{client.name}</h3>
-              <p className="text-sm text-muted-foreground">{client.company}</p>
+              <h3 className="text-sm md:text-base font-semibold text-card-foreground truncate">{client.name}</h3>
+              <p className="text-xs md:text-sm text-muted-foreground truncate">{client.company}</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1 sm:gap-2">
             <Badge className={getStatusColor(client.status)} variant="secondary">
               {client.status}
             </Badge>
@@ -62,7 +62,7 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps) {
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  size="sm" 
+                  size="sm"
                   className="opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <MoreHorizontal className="w-4 h-4" />
@@ -86,19 +86,19 @@ export function ClientCard({ client, onEdit, onDelete }: ClientCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <CardContent className="space-y-2 md:space-y-3 px-4 md:px-6">
+        <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
           <Mail className="w-4 h-4" />
           <span className="truncate">{client.email}</span>
         </div>
         
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
           <Phone className="w-4 h-4" />
           <span>{client.phone}</span>
         </div>
 
         {client.address && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
             <MapPin className="w-4 h-4" />
             <span className="truncate">{client.address}</span>
           </div>

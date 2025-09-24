@@ -197,11 +197,11 @@ All colors MUST be HSL.
 @layer utilities {
   /* Layout utilities */
   .container-erp {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8;
   }
 
   .grid-cards {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6;
   }
 
   .flex-center {
@@ -210,6 +210,33 @@ All colors MUST be HSL.
 
   .flex-between {
     @apply flex items-center justify-between;
+  }
+
+  /* Mobile-specific utilities */
+  .mobile-padding {
+    @apply px-3 md:px-6;
+  }
+
+  .mobile-text {
+    @apply text-sm md:text-base;
+  }
+
+  .mobile-heading {
+    @apply text-lg md:text-xl lg:text-2xl;
+  }
+
+  /* Touch-friendly button sizes */
+  .btn-mobile {
+    @apply min-h-[44px] px-4 py-2;
+  }
+
+  /* Responsive spacing */
+  .space-mobile {
+    @apply space-y-3 md:space-y-4 lg:space-y-6;
+  }
+
+  .gap-mobile {
+    @apply gap-3 md:gap-4 lg:gap-6;
   }
 }
 

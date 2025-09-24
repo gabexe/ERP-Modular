@@ -18,7 +18,7 @@ export function MainLayout() {
           <TopHeader />
           
           <div className="flex-1 overflow-auto">
-            <div className="container-erp py-8">
+            <div className="container-erp py-4 md:py-6 lg:py-8">
               <Outlet />
             </div>
           </div>

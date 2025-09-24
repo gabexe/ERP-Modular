@@ -61,7 +61,7 @@ export function ClientModal() {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={closeModal}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md mx-4 md:mx-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="w-5 h-5 text-primary" />
@@ -69,20 +69,21 @@ export function ClientModal() {
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Nombre Completo</Label>
+            <Label htmlFor="name" className="text-sm md:text-base">Nombre Completo</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
               placeholder="Juan Pérez"
+              className="h-9 md:h-10"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-sm md:text-base">Email</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
@@ -91,14 +92,14 @@ export function ClientModal() {
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 placeholder="juan@ejemplo.com"
-                className="pl-10"
+                className="pl-10 h-9 md:h-10"
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Teléfono</Label>
+            <Label htmlFor="phone" className="text-sm md:text-base">Teléfono</Label>
             <div className="relative">
               <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
@@ -106,13 +107,13 @@ export function ClientModal() {
                 value={formData.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
                 placeholder="+1 234 567 8900"
-                className="pl-10"
+                className="pl-10 h-9 md:h-10"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="company">Empresa</Label>
+            <Label htmlFor="company" className="text-sm md:text-base">Empresa</Label>
             <div className="relative">
               <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
@@ -120,13 +121,13 @@ export function ClientModal() {
                 value={formData.company}
                 onChange={(e) => handleChange("company", e.target.value)}
                 placeholder="Empresa SA"
-                className="pl-10"
+                className="pl-10 h-9 md:h-10"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">Dirección</Label>
+            <Label htmlFor="address" className="text-sm md:text-base">Dirección</Label>
             <div className="relative">
               <MapPin className="absolute left-3 top-3 text-muted-foreground w-4 h-4" />
               <Textarea
@@ -134,13 +135,13 @@ export function ClientModal() {
                 value={formData.address}
                 onChange={(e) => handleChange("address", e.target.value)}
                 placeholder="Calle Principal 123, Ciudad"
-                className="pl-10 min-h-[80px]"
+                className="pl-10 min-h-[60px] md:min-h-[80px]"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="status">Estado</Label>
+            <Label htmlFor="status" className="text-sm md:text-base">Estado</Label>
             <Select value={formData.status} onValueChange={(value) => handleChange("status", value)}>
               <SelectTrigger>
                 <SelectValue />
@@ -154,21 +155,21 @@ export function ClientModal() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Notas</Label>
+            <Label htmlFor="notes" className="text-sm md:text-base">Notas</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => handleChange("notes", e.target.value)}
               placeholder="Notas adicionales sobre el cliente..."
-              className="min-h-[80px]"
+              className="min-h-[60px] md:min-h-[80px]"
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={closeModal} className="flex-1">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <Button type="button" variant="outline" onClick={closeModal} className="flex-1 h-10 md:h-11">
               Cancelar
             </Button>
-            <Button type="submit" className="flex-1">
+            <Button type="submit" className="flex-1 h-10 md:h-11">
               <Save className="w-4 h-4 mr-2" />
               Guardar
             </Button>

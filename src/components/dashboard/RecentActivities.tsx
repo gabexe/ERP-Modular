@@ -107,33 +107,33 @@ export function RecentActivities() {
   return (
     <Card className="col-span-1 lg:col-span-2 card-gradient">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-semibold">Actividades Recientes</CardTitle>
-        <Button variant="ghost" size="sm" className="text-primary hover:text-primary-hover">
+        <CardTitle className="text-base md:text-lg font-semibold">Actividades Recientes</CardTitle>
+        <Button variant="ghost" size="sm" className="text-primary hover:text-primary-hover hidden md:flex">
           Ver todas
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {recentActivities.map((activity) => {
             const status = statusConfig[activity.status] || statusConfig.pendiente;
             const type = typeConfig[activity.type];
 
             return (
-              <div key={`${activity.type}-${activity.id}`} className="flex items-start space-x-4 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+              <div key={`${activity.type}-${activity.id}`} className="flex items-start space-x-3 md:space-x-4 p-2 md:p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
                 <div className="flex-shrink-0 mt-1">
                   {status.icon}
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-1 gap-1">
                     <h4 className="text-sm font-medium truncate">{activity.title}</h4>
                     {status.badge}
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">
+                  <p className="text-xs md:text-sm text-muted-foreground mb-2">
                     {activity.description}
                   </p>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                     <span className="text-xs text-muted-foreground">{formatRelativeTime(activity.date)}</span>
                     <span className={`flex items-center text-xs font-medium capitalize ${type.color}`}>
                       {type.icon} <span className="ml-1">{activity.type}</span>
@@ -141,7 +141,7 @@ export function RecentActivities() {
                   </div>
                 </div>
                 
-                <Button variant="ghost" size="icon" className="flex-shrink-0">
+                <Button variant="ghost" size="sm" className="flex-shrink-0 hidden sm:flex">
                   <Eye className="w-4 h-4" />
                 </Button>
               </div>

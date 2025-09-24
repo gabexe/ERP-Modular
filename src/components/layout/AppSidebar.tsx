@@ -109,16 +109,16 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      className="transition-all duration-300 ease-in-out border-r border-sidebar-border"
+      className="transition-all duration-300 ease-in-out border-r border-sidebar-border md:block"
       collapsible="icon"
     >
       <SidebarContent className="bg-sidebar">
         {/* Header */}
-        <div className="flex items-center px-4 py-6 border-b border-sidebar-border">
+        <div className="flex items-center px-3 md:px-4 py-4 md:py-6 border-b border-sidebar-border">
           <div className="flex items-center space-x-3">
             {!collapsed && (
               <div className="fade-in">
-                <h1 className="text-lg font-semibold text-sidebar-foreground">
+                <h1 className="text-base md:text-lg font-semibold text-sidebar-foreground truncate">
                   {getGreeting()}, Oscar Gencarelli
                 </h1>
               </div>
@@ -127,12 +127,12 @@ export function AppSidebar() {
         </div>
 
         {/* Navigation Menu */}
-        <SidebarGroup className={collapsed ? "p-2" : "px-3 py-4"}>
-          <SidebarGroupLabel className={`${collapsed ? "hidden" : "block"} text-sidebar-foreground/60 font-medium`}>
+        <SidebarGroup className={collapsed ? "p-1 md:p-2" : "px-2 md:px-3 py-3 md:py-4"}>
+          <SidebarGroupLabel className={`${collapsed ? "hidden" : "block"} text-sidebar-foreground/60 font-medium text-sm md:text-base`}>
             Módulos Principales
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
+            <SidebarMenu className="space-y-1 md:space-y-1">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -141,10 +141,10 @@ export function AppSidebar() {
                       className={getNavClassName(item.url)}
                       title={collapsed ? item.title : ""}
                     >
-                      <item.icon className="w-5 h-5 flex-shrink-0" />
+                      <item.icon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
                       {!collapsed && (
                         <div className="flex flex-col min-w-0 fade-in">
-                          <span className="font-medium truncate">{item.title}</span>
+                          <span className="font-medium truncate text-sm md:text-base">{item.title}</span>
                           
                         </div>
                       )}
@@ -157,12 +157,12 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Settings Section */}
-        <SidebarGroup className={collapsed ? "p-2 mt-auto" : "px-3 py-4 mt-auto"}>
-          <SidebarGroupLabel className={`${collapsed ? "hidden" : "block"} text-sidebar-foreground/60 font-medium`}>
+        <SidebarGroup className={collapsed ? "p-1 md:p-2 mt-auto" : "px-2 md:px-3 py-3 md:py-4 mt-auto"}>
+          <SidebarGroupLabel className={`${collapsed ? "hidden" : "block"} text-sidebar-foreground/60 font-medium text-sm md:text-base`}>
             Sistema
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
+            <SidebarMenu className="space-y-1 md:space-y-1">
               {settingsItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -171,10 +171,10 @@ export function AppSidebar() {
                       className={getNavClassName(item.url)}
                       title={collapsed ? item.title : ""}
                     >
-                      <item.icon className="w-5 h-5 flex-shrink-0" />
+                      <item.icon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
                       {!collapsed && (
                         <div className="flex flex-col min-w-0 fade-in">
-                          <span className="font-medium truncate">{item.title}</span>
+                          <span className="font-medium truncate text-sm md:text-base">{item.title}</span>
                           
                         </div>
                       )}
