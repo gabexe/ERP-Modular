@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import CRM from "./pages/CRM";
 import Inventario from "./pages/Inventario";
@@ -35,7 +35,9 @@ const App = () => {
           <Routes>
             {!user ? (
               <>
-                <Route path="*" element={<Auth />} />
+                <Route path="/login" element={<Auth />} />
+                <Route path="/register" element={<Auth />} />
+                <Route path="*" element={<Navigate to="/login" />} />
               </>
             ) : (
               <>
