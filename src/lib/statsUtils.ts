@@ -14,8 +14,8 @@ export const getPreviousMonthDateRange = (date: Date = new Date()) => {
   return { firstDay, lastDay };
 };
 
-export const calculatePercentageChange = (current: number, previous: number): { value: number, trend: 'up' | 'down' } => {
-  if (previous === 0) return { value: 0, trend: 'up' };
+export const calculatePercentageChange = (current: number, previous: number): { value: number, trend: 'up' | 'down' } | null => {
+  if (previous === 0) return null;
   const change = ((current - previous) / previous) * 100;
   return {
     value: Math.abs(Math.round(change * 10) / 10),

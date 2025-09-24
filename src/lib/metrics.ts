@@ -17,14 +17,14 @@ export function calculateCRMMetrics(clients: Client[]) {
   }).length;
 
   const percentageChange = prevMonthClients === 0 
-    ? currentMonthClients * 100 
+    ? 'N/A' 
     : ((currentMonthClients - prevMonthClients) / prevMonthClients) * 100;
 
   return {
     totalClients: clients.length,
     activeClients,
     prospects,
-    monthGrowth: Math.round(percentageChange * 10) / 10 // Round to 1 decimal
+    monthGrowth: percentageChange === 'N/A' ? 'N/A' : Math.round(percentageChange * 10) / 10
   };
 }
 
@@ -57,7 +57,7 @@ export function calculateReportMetrics(invoices: Invoice[], clients: Client[]) {
   const currentMonthRevenue = currentMonthInvoices.reduce((sum, i) => sum + i.total, 0);
   const prevMonthRevenue = prevMonthInvoices.reduce((sum, i) => sum + i.total, 0);
   const revenueChange = prevMonthRevenue === 0 
-    ? currentMonthRevenue * 100 
+    ? 'N/A' 
     : ((currentMonthRevenue - prevMonthRevenue) / prevMonthRevenue) * 100;
 
   // Clientes nuevos
@@ -67,14 +67,14 @@ export function calculateReportMetrics(invoices: Invoice[], clients: Client[]) {
     return date >= firstDayOfPrevMonth && date < firstDayOfMonth;
   }).length;
   const clientsChange = prevMonthClients === 0 
-    ? currentMonthClients * 100 
+    ? 'N/A' 
     : ((currentMonthClients - prevMonthClients) / prevMonthClients) * 100;
 
   // Ventas
   const currentMonthSales = currentMonthInvoices.length;
   const prevMonthSales = prevMonthInvoices.length;
   const salesChange = prevMonthSales === 0 
-    ? currentMonthSales * 100 
+    ? 'N/A' 
     : ((currentMonthSales - prevMonthSales) / prevMonthSales) * 100;
 
   // Tasa de conversión (prospectos a clientes)
@@ -100,25 +100,25 @@ export function calculateReportMetrics(invoices: Invoice[], clients: Client[]) {
     ? 0 
     : (prevConverted / prevProspects) * 100;
   const conversionChange = prevConversionRate === 0 
-    ? currentConversionRate * 100 
+    ? 'N/A' 
     : ((currentConversionRate - prevConversionRate) / prevConversionRate) * 100;
 
   return {
     revenue: {
       total: Math.round(currentMonthRevenue * 100) / 100,
-      change: Math.round(revenueChange * 10) / 10
+      change: revenueChange === 'N/A' ? 'N/A' : Math.round(revenueChange * 10) / 10
     },
     newClients: {
       total: currentMonthClients,
-      change: Math.round(clientsChange * 10) / 10
+      change: clientsChange === 'N/A' ? 'N/A' : Math.round(clientsChange * 10) / 10
     },
     sales: {
       total: currentMonthSales,
-      change: Math.round(salesChange * 10) / 10
+      change: salesChange === 'N/A' ? 'N/A' : Math.round(salesChange * 10) / 10
     },
     conversionRate: {
       rate: Math.round(currentConversionRate * 10) / 10,
-      change: Math.round(conversionChange * 10) / 10
+      change: conversionChange === 'N/A' ? 'N/A' : Math.round(conversionChange * 10) / 10
     }
   };
 }

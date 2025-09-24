@@ -37,8 +37,8 @@ const Reportes = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">${metrics.revenue.total.toLocaleString()}</div>
-            <p className={`text-xs ${metrics.revenue.change >= 0 ? 'text-success' : 'text-destructive'}`}>
-              {metrics.revenue.change >= 0 ? '+' : ''}{metrics.revenue.change}% desde el mes pasado
+            <p className={`text-xs ${metrics.revenue.change !== 'N/A' && metrics.revenue.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.revenue.change === 'N/A' ? 'N/A' : `${metrics.revenue.change >= 0 ? '+' : ''}${metrics.revenue.change}% desde el mes pasado`}
             </p>
           </CardContent>
         </Card>
@@ -49,8 +49,8 @@ const Reportes = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+{metrics.newClients.total}</div>
-            <p className={`text-xs ${metrics.newClients.change >= 0 ? 'text-success' : 'text-destructive'}`}>
-              {metrics.newClients.change >= 0 ? '+' : ''}{metrics.newClients.change}% desde el mes pasado
+            <p className={`text-xs ${metrics.newClients.change !== 'N/A' && metrics.newClients.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.newClients.change === 'N/A' ? 'N/A' : `${metrics.newClients.change >= 0 ? '+' : ''}${metrics.newClients.change}% desde el mes pasado`}
             </p>
           </CardContent>
         </Card>
@@ -61,8 +61,8 @@ const Reportes = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+{metrics.sales.total}</div>
-            <p className={`text-xs ${metrics.sales.change >= 0 ? 'text-success' : 'text-destructive'}`}>
-              {metrics.sales.change >= 0 ? '+' : ''}{metrics.sales.change}% desde el mes pasado
+            <p className={`text-xs ${metrics.sales.change !== 'N/A' && metrics.sales.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.sales.change === 'N/A' ? 'N/A' : `${metrics.sales.change >= 0 ? '+' : ''}${metrics.sales.change}% desde el mes pasado`}
             </p>
           </CardContent>
         </Card>
@@ -73,8 +73,8 @@ const Reportes = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics.conversionRate.rate}%</div>
-            <p className={`text-xs ${metrics.conversionRate.change >= 0 ? 'text-success' : 'text-destructive'}`}>
-              {metrics.conversionRate.change >= 0 ? '+' : ''}{metrics.conversionRate.change}% desde el mes pasado
+            <p className={`text-xs ${metrics.conversionRate.change !== 'N/A' && metrics.conversionRate.change >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {metrics.conversionRate.change === 'N/A' ? 'N/A' : `${metrics.conversionRate.change >= 0 ? '+' : ''}${metrics.conversionRate.change}% desde el mes pasado`}
             </p>
           </CardContent>
         </Card>

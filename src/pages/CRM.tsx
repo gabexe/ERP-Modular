@@ -89,10 +89,28 @@ export default function CRM() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            <div className="text-xl md:text-2xl font-bold text-foreground">{metrics.totalClients}</div>
-            <p className={`text-xs ${metrics.monthGrowth >= 0 ? 'text-success' : 'text-destructive'}`}>
-              {metrics.monthGrowth >= 0 ? '+' : ''}{metrics.monthGrowth}% este mes
-            </p>
+            {loading ? (
+              <>
+                <Skeleton className="h-8 w-1/2" />
+                <Skeleton className="h-4 w-1/3 mt-1" />
+              </>
+            ) : (
+              <>
+                <div className="text-xl md:text-2xl font-bold text-foreground">{metrics.totalClients}</div>
+                <p className={`text-xs ${
+                  metrics.monthGrowth === 'N/A'
+                    ? 'text-muted-foreground'
+                    : metrics.monthGrowth >= 0
+                      ? 'text-success'
+                      : 'text-destructive'
+                }`}>
+                  {metrics.monthGrowth === 'N/A'
+                    ? 'N/A'
+                    : `${metrics.monthGrowth >= 0 ? '+' : ''}${metrics.monthGrowth}% este mes`
+                  }
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
         
@@ -103,10 +121,28 @@ export default function CRM() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            <div className="text-xl md:text-2xl font-bold text-foreground">{metrics.activeClients}</div>
-            <p className={`text-xs ${metrics.monthGrowth >= 0 ? 'text-success' : 'text-destructive'}`}>
-              {metrics.monthGrowth >= 0 ? '+' : ''}{metrics.monthGrowth}% este mes
-            </p>
+            {loading ? (
+              <>
+                <Skeleton className="h-8 w-1/2" />
+                <Skeleton className="h-4 w-1/3 mt-1" />
+              </>
+            ) : (
+              <>
+                <div className="text-xl md:text-2xl font-bold text-foreground">{metrics.activeClients}</div>
+                <p className={`text-xs ${
+                  metrics.monthGrowth === 'N/A'
+                    ? 'text-muted-foreground'
+                    : metrics.monthGrowth >= 0
+                      ? 'text-success'
+                      : 'text-destructive'
+                }`}>
+                  {metrics.monthGrowth === 'N/A'
+                    ? 'N/A'
+                    : `${metrics.monthGrowth >= 0 ? '+' : ''}${metrics.monthGrowth}% este mes`
+                  }
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
         
@@ -117,10 +153,28 @@ export default function CRM() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4 md:px-6">
-            <div className="text-xl md:text-2xl font-bold text-foreground">{metrics.prospects}</div>
-            <p className={`text-xs ${metrics.monthGrowth >= 0 ? 'text-success' : 'text-destructive'}`}>
-              {metrics.monthGrowth >= 0 ? '+' : ''}{metrics.monthGrowth}% este mes
-            </p>
+            {loading ? (
+              <>
+                <Skeleton className="h-8 w-1/2" />
+                <Skeleton className="h-4 w-1/3 mt-1" />
+              </>
+            ) : (
+              <>
+                <div className="text-xl md:text-2xl font-bold text-foreground">{metrics.prospects}</div>
+                <p className={`text-xs ${
+                  metrics.monthGrowth === 'N/A'
+                    ? 'text-muted-foreground'
+                    : metrics.monthGrowth >= 0
+                      ? 'text-success'
+                      : 'text-destructive'
+                }`}>
+                  {metrics.monthGrowth === 'N/A'
+                    ? 'N/A'
+                    : `${metrics.monthGrowth >= 0 ? '+' : ''}${metrics.monthGrowth}% este mes`
+                  }
+                </p>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>

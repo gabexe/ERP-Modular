@@ -11,7 +11,7 @@ interface StatCardProps {
   title: string;
   value: string;
   change: string;
-  trend: "up" | "down";
+  trend: "up" | "down" | "none";
   icon: React.ReactNode;
   isLoading?: boolean;
 }
@@ -53,11 +53,15 @@ function StatCard({ title, value, change, trend, icon, isLoading }: StatCardProp
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        <div className="flex items-center text-xs mt-1">
-          <TrendIcon className={`w-3 h-3 mr-1 ${trendColor}`} />
-          <span className={trendColor}>{change}</span>
-          <span className="text-muted-foreground ml-1">vs mes anterior</span>
-        </div>
+        {change === 'N/A' ? (
+          <p className="text-xs text-muted-foreground mt-1">No hay datos del mes anterior</p>
+        ) : (
+          <div className="flex items-center text-xs mt-1">
+            <TrendIcon className={`w-3 h-3 mr-1 ${trendColor}`} />
+            <span className={trendColor}>{change}</span>
+            <span className="text-muted-foreground ml-1">vs mes anterior</span>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -134,29 +138,29 @@ export function StatsCards() {
     {
       title: "Clientes Activos",
       value: currentActiveClients.toLocaleString(),
-      change: `${clientsChange.value}%`,
-      trend: clientsChange.trend,
+      change: clientsChange ? `${clientsChange.value}%` : 'N/A',
+      trend: clientsChange ? clientsChange.trend : 'none',
       icon: <Users className="w-4 h-4" />
     },
     {
       title: "Productos en Stock",
       value: currentStock.toLocaleString(),
-      change: `${stockChange.value}%`,
-      trend: stockChange.trend,
+      change: stockChange ? `${stockChange.value}%` : 'N/A',
+      trend: stockChange ? stockChange.trend : 'none',
       icon: <Package className="w-4 h-4" />
     },
     {
       title: "Facturación Mensual",
-      value: `$${currentMonthRevenue.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-      change: `${revenueChange.value}%`,
-      trend: revenueChange.trend,
+      value: `${currentMonthRevenue.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      change: revenueChange ? `${revenueChange.value}%` : 'N/A',
+      trend: revenueChange ? revenueChange.trend : 'none',
       icon: <Receipt className="w-4 h-4" />
     },
     {
       title: "Citas para Hoy",
       value: todayAppointments.toString(),
-      change: `${appointmentsChange.value}%`,
-      trend: appointmentsChange.trend,
+      change: appointmentsChange ? `${appointmentsChange.value}%` : 'N/A',
+      trend: appointmentsChange ? appointmentsChange.trend : 'none',
       icon: <Calendar className="w-4 h-4" />
     }
   ];
