@@ -99,7 +99,9 @@ export function AppSidebar() {
   const { userRole } = useRoles();
 
   const getGreeting = () => {
-    const hour = new Date().getHours();
+    const now = new Date();
+    const utcHour = now.getUTCHours();
+    const hour = (utcHour - 3 + 24) % 24;
     if (hour < 12) return "Buen día";
     if (hour < 18) return "Buenas tardes";
     return "Buenas noches";
