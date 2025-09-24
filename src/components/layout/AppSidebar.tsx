@@ -126,13 +126,13 @@ export function AppSidebar() {
       <SidebarContent className="bg-sidebar">
         {/* Header */}
         <div className="flex items-center px-3 md:px-4 py-4 md:py-6 border-b border-sidebar-border">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 w-full">
             {!collapsed && (
-              <div className="fade-in space-y-1 min-w-0">
-                <h1 className="text-base md:text-lg font-semibold text-sidebar-foreground truncate">
+              <div className="fade-in space-y-1 min-w-0 w-full">
+                <h1 className="text-base md:text-lg font-semibold text-sidebar-foreground break-words w-full">
                   {getGreeting()}, {user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuario'}
                 </h1>
-                <p className="text-sm text-sidebar-foreground/70 truncate">
+                <p className="text-sm text-sidebar-foreground/70 break-words w-full">
                   {userRole?.role === 'admin' ? 'Administrador' : userRole?.role === 'editor' ? 'Editor' : 'Visualizador'}
                 </p>
               </div>
