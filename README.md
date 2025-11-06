@@ -20,9 +20,6 @@ Este proyecto es un Sistema ERP (Enterprise Resource Planning) diseñado para pe
     *   `input-otp`: Componente para entrada de códigos OTP.
     *   `react-day-picker`: Selector de fechas.
     *   `sonner`: Librería para notificaciones tipo "toast".
-*   **Gestión de Estado**: Zustand
-*   **Enrutamiento**: React Router DOM
-*   **Validación de Esquemas**: Zod
 *   **Gestión de Formularios**: React Hook Form
 *   **Iconos**: Lucide React
 *   **Gráficos**: Recharts
