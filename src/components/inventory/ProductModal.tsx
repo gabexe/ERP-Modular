@@ -7,11 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useModalStore } from "@/store/useModalStore";
-import { useInventoryStore } from "@/store/useInventoryStore";
+import { useInventoryStore, Product } from "@/store/useInventoryStore";
+import { useToast } from "@/hooks/use-toast";
 
 export function ProductModal() {
   const { isOpen, type, data, closeModal } = useModalStore();
   const { saveProduct } = useInventoryStore();
+  const { toast } = useToast();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -50,10 +52,72 @@ export function ProductModal() {
     }
   }, [product]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    saveProduct(formData, product?.id);
-    closeModal();
+    
+    // Validaciones
+    if (!formData.name || !formData.sku || !formData.category) {
+      toast({
+        title: "Error de validación",
+        description: "Por favor completa todos los campos obligatorios.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.price || parseFloat(formData.price) <= 0) {
+      toast({
+        title: "Error de validación",
+        description: "El precio debe ser mayor a 0.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.stock || parseInt(formData.stock) < 0) {
+      toast({
+        title: "Error de validación",
+        description: "El stock no puede ser negativo.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!formData.minStock || parseInt(formData.minStock) < 0) {
+      toast({
+        title: "Error de validación",
+        description: "El stock mínimo no puede ser negativo.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Convertir tipos antes de guardar
+      const productToSave: Partial<Product> = {
+        name: formData.name,
+        sku: formData.sku,
+        category: formData.category,
+        price: parseFloat(formData.price),
+        stock: parseInt(formData.stock, 10),
+        minStock: parseInt(formData.minStock, 10),
+        description: formData.description,
+      };
+
+      await saveProduct(productToSave, product?.id);
+      closeModal();
+      toast({
+        title: "Éxito",
+        description: product ? "Producto actualizado correctamente." : "Producto creado correctamente.",
+      });
+    } catch (error: any) {
+      console.error("Error al guardar producto:", error);
+      toast({
+        title: "Error",
+        description: error?.message || "Hubo un problema al guardar el producto.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleChange = (field: string, value: string) => {

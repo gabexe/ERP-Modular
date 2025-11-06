@@ -14,7 +14,8 @@ import {
   ChevronLeft,
   Menu,
   Building2,
-  UserCog
+  UserCog,
+  CreditCard
 } from "lucide-react";
 
 import {
@@ -76,6 +77,12 @@ const menuItems = [
 ];
 
 const settingsItems = [
+  { 
+    title: "Suscripción", 
+    url: "/suscripciones", 
+    icon: CreditCard,
+    description: "Planes y pagos"
+  },
   { 
     title: "Usuarios", 
     url: "/usuarios", 

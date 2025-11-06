@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Package, Plus, Search, Filter, Download, AlertTriangle, TrendingUp, Boxes, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,8 +13,13 @@ import { calculateInventoryMetrics } from "@/lib/metrics";
 export default function Inventario() {
   const [searchTerm, setSearchTerm] = useState("");
   const { openModal } = useModalStore();
-  const { products, deleteProduct } = useInventoryStore();
+  const { products, deleteProduct, fetchProducts } = useInventoryStore();
   const { toast } = useToast();
+
+  // Cargar productos al montar el componente
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleNewProduct = () => {
     openModal('product');

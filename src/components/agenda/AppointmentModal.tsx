@@ -5,11 +5,13 @@ import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { useModalStore } from "@/store/useModalStore";
 import { useAgendaStore } from "@/store/useAgendaStore";
+import { useCrmStore } from "@/store/useCrmStore";
 import { toast } from "sonner";
 
 export function AppointmentModal() {
   const { isOpen, type, data, closeModal } = useModalStore();
   const { saveAppointment } = useAgendaStore();
+  const { clients, fetchClients } = useCrmStore();
 
   const [title, setTitle] = useState("");
   const [client, setClient] = useState("");
@@ -20,6 +22,12 @@ export function AppointmentModal() {
 
   const isModalOpen = isOpen && type === 'appointment';
   const appointment = data?.appointment;
+
+  useEffect(() => {
+    if (isModalOpen) {
+      fetchClients();
+    }
+  }, [isModalOpen, fetchClients]);
 
   useEffect(() => {
     if (appointment) {
@@ -48,6 +56,15 @@ export function AppointmentModal() {
     closeModal();
   };
 
+  const handleClientChange = (value: string) => {
+    setClient(value);
+    // Autocompletar teléfono si el cliente existe en la base de datos
+    const selectedClient = clients.find(c => c.name === value);
+    if (selectedClient && selectedClient.phone) {
+      setPhone(selectedClient.phone);
+    }
+  };
+
   return (
     <Dialog open={isModalOpen} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-[425px]">
@@ -62,7 +79,23 @@ export function AppointmentModal() {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="client" className="text-right">Cliente</Label>
-            <Input id="client" value={client} onChange={(e) => setClient(e.target.value)} className="col-span-3" placeholder="Nombre del cliente" />
+            <div className="col-span-3">
+              <Input 
+                id="client"
+                list="clients-list"
+                value={client} 
+                onChange={(e) => handleClientChange(e.target.value)} 
+                placeholder="Escribe o selecciona un cliente"
+                autoComplete="off"
+              />
+              <datalist id="clients-list">
+                {clients.map((c) => (
+                  <option key={c.id} value={c.name}>
+                    {c.company && `${c.company} - `}{c.name}
+                  </option>
+                ))}
+              </datalist>
+            </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="phone" className="text-right">Teléfono</Label>
